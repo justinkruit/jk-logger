@@ -25,13 +25,16 @@ foreach (glob(plugin_dir_path(__FILE__) . "panels/*.php") as $filename) {
 use Tracy\Debugger;
 
 add_filter('wp_die_handler', function ($handler) {
-  return !is_admin() ? 'jk_debug_load_tracy' : $handler;
+  if (!is_admin() && jkdebug_should_load() && jkdebug_get_settings()['override_wpdie']) {
+    return 'jkdebug_load_tracy';
+  }
+  return $handler;
 }, 10);
 
-add_action('init', 'jk_debug_load_tracy', 2);
-add_action('plugins_loaded', 'jk_debug_plugins_loaded');
+add_action('init', 'jkdebug_load_tracy', 2);
+add_action('plugins_loaded', 'jkdebug_plugins_loaded');
 
-function jk_debug_load_tracy() {
+function jkdebug_load_tracy() {
   if (is_admin()) {
     return;
   }
@@ -48,7 +51,19 @@ function jk_debug_load_tracy() {
     "WpTracy\\WpCurrentScreenPanel",
   ]; // in the correct order
 
-  Tracy\Debugger::enable();
+  switch (jkdebug_get_settings()["debugger_mode"]) {
+    case "development":
+      $debugMode = Tracy\Debugger::DEVELOPMENT;
+      break;
+    case "production":
+      $debugMode = Tracy\Debugger::PRODUCTION;
+      break;
+    default:
+      $debugMode = Tracy\Debugger::DETECT;
+      break;
+  }
+
+  Tracy\Debugger::enable($debugMode);
 
   foreach ($panelsClasses as $className) {
     $panel = new $className;
@@ -58,7 +73,7 @@ function jk_debug_load_tracy() {
   }
 }
 
-function jk_debug_plugins_loaded() {
+function jkdebug_plugins_loaded() {
   require plugin_dir_path(__FILE__) . 'plugin-update-checker/plugin-update-checker.php';
 
   $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
@@ -70,3 +85,61 @@ function jk_debug_plugins_loaded() {
   $myUpdateChecker->setBranch('release');
   // $myUpdateChecker->getVcsApi()->enableReleaseAssets();
 }
+
+function jkdebug_should_load() {
+  $allowed = true;
+  $env = wp_get_environment_type();
+  $settings = jkdebug_get_settings();
+
+  if (!$settings['enable']) {
+    return false;
+  }
+
+  if ($settings['required_environment'] !== $env) {
+    return false;
+  }
+
+  if ($settings['require_signed_in']) {
+    if (!is_user_logged_in()) {
+      return false;
+    }
+
+    if ($settings['allowed_users']) {
+      if (!in_array(get_current_user_id(), $settings['allowed_users'])) {
+        return false;
+      }
+    }
+  }
+
+  return $allowed;
+}
+
+function jkdebug_get_settings() {
+  $userSettings = array();
+  $defaultSettings = [
+    "enable" => true,
+    "required_environment" => 'development',
+    "require_signed_in" => false,
+    "allowed_users" => false,
+    "debugger_mode" => 'development',
+    "override_wpdie" => false,
+  ];
+
+  if (class_exists('ACF')) {
+    $userSettings = get_field('jkdebug', 'options');
+  }
+
+  return wp_parse_args($userSettings, $defaultSettings);
+}
+
+function jkdebug_register_acf_options_pages() {
+  if (function_exists('acf_add_options_page')) {
+    acf_add_options_sub_page(array(
+      'page_title'  => 'JK Debug',
+      'menu_title'  => 'JK Debug',
+      'menu_slug'   => 'jk-debug',
+      'parent_slug' => 'options-general.php',
+    ));
+  }
+}
+add_action('acf/init', 'jkdebug_register_acf_options_pages');
