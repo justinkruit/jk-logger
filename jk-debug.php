@@ -5,7 +5,7 @@
  * Plugin URI:   https://github.com/justinkruit/jk-debug/
  * Description:  Debug for WordPress
  *
- * Version:      1.0.2
+ * Version:      1.0.0
  *
  * Author:       Justin Kruit
  * Author URI:   https://justinkruit.com
@@ -24,10 +24,14 @@ foreach (glob(plugin_dir_path(__FILE__) . "panels/*.php") as $filename) {
 
 use Tracy\Debugger;
 
-add_action('init', 'jk_debug_init_action', 2);
+add_filter('wp_die_handler', function ($handler) {
+  return !is_admin() ? 'jk_debug_load_tracy' : $handler;
+}, 10);
+
+add_action('init', 'jk_debug_load_tracy', 2);
 add_action('plugins_loaded', 'jk_debug_plugins_loaded');
 
-function jk_debug_init_action() {
+function jk_debug_load_tracy() {
   if (is_admin()) {
     return;
   }
