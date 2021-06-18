@@ -63,7 +63,13 @@ function jkdebug_load_tracy() {
       break;
   }
 
-  Debugger::enable($debugMode);
+  $log_location = ABSPATH . 'content/jk_debug';
+  
+  if (!file_exists($log_location)) {
+    mkdir($log_location, 0755, true);
+  }
+
+  Debugger::enable($debugMode, $log_location);
 
   foreach ($panelsClasses as $className) {
     $panel = new $className;
