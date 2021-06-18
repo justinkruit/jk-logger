@@ -35,7 +35,7 @@ add_action('init', 'jkdebug_load_tracy', 2);
 add_action('plugins_loaded', 'jkdebug_plugins_loaded');
 
 function jkdebug_load_tracy() {
-  if (is_admin()) {
+  if (is_admin() || !jkdebug_should_load()) {
     return;
   }
 
@@ -118,11 +118,11 @@ function jkdebug_get_settings() {
   $userSettings = array();
   $defaultSettings = [
     "enable" => true,
-    "required_environment" => 'development',
-    "require_signed_in" => false,
-    "allowed_users" => false,
-    "debugger_mode" => 'development',
-    "override_wpdie" => false,
+    "required_environment" => defined('JKDEBUG_REQUIRED_ENVIRONMENT') ? JKDEBUG_REQUIRED_ENVIRONMENT : 'development',
+    "require_signed_in" => defined('JKDEBUG_REQUIRE_SIGN_IN') ? JKDEBUG_REQUIRE_SIGN_IN : false,
+    "allowed_users" => defined('JKDEBUG_ALLOWED_USERS') ? JKDEBUG_ALLOWED_USERS : false,
+    "debugger_mode" => defined('JKDEBUG_DEBUGGER_MODE') ? JKDEBUG_DEBUGGER_MODE : 'development',
+    "override_wpdie" => defined('JKDEBUG_OVERRIDE_WPDIE') ? JKDEBUG_OVERRIDE_WPDIE : false,
   ];
 
   if (class_exists('ACF')) {
