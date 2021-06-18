@@ -28,6 +28,10 @@ add_action("init", "jk_debug_init_action", 2);
 add_action( 'plugins_loaded', 'jk_debug_plugins_loaded' );
 
 function jk_debug_init_action() {
+if(is_admin()) {
+  return;
+}
+
   $panelsClasses = [
     "WpTracy\\WpPanel",
     "WpTracy\\WpUserPanel",
