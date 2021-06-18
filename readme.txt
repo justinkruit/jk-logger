@@ -3,7 +3,7 @@ Contributors: justinkruit
 Tags: php, debug, jk
 Requires at least: 4.6
 Tested up to: 5.8
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 
 My own personal debugger for WordPress.
 
