@@ -62,4 +62,6 @@ function jk_debug_plugins_loaded() {
     __FILE__,
     'jk-debug'
   );
+
+  $myUpdateChecker->setBranch('release');
 }
