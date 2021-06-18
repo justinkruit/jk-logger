@@ -53,22 +53,22 @@ function jkdebug_load_tracy() {
 
   switch (jkdebug_get_settings()["debugger_mode"]) {
     case "development":
-      $debugMode = Tracy\Debugger::DEVELOPMENT;
+      $debugMode = Debugger::DEVELOPMENT;
       break;
     case "production":
-      $debugMode = Tracy\Debugger::PRODUCTION;
+      $debugMode = Debugger::PRODUCTION;
       break;
     default:
-      $debugMode = Tracy\Debugger::DETECT;
+      $debugMode = Debugger::DETECT;
       break;
   }
 
-  Tracy\Debugger::enable($debugMode);
+  Debugger::enable($debugMode);
 
   foreach ($panelsClasses as $className) {
     $panel = new $className;
     if ($panel instanceof Tracy\IBarPanel) {
-      Tracy\Debugger::getBar()->addPanel(new $className);
+      Debugger::getBar()->addPanel(new $className);
     }
   }
 }
