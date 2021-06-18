@@ -149,3 +149,5 @@ function jkdebug_register_acf_options_pages() {
   }
 }
 add_action('acf/init', 'jkdebug_register_acf_options_pages');
+
+include_once 'acf-settings.php';
