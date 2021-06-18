@@ -20,11 +20,15 @@ abstract class WpPanelBase implements IBarPanel
      * @param string $imageBase64
      * @return string
      */
-    public function getSimpleTab($title = null, $description = null, $imageBase64 = null)
+    public function getSimpleTab($title = null, $description = null, $imageBase64 = null, $svg = null)
     {
         $output = "<span" . (!empty($description) ? " title=\"$description\"" : "") . ">";
         if (!empty($imageBase64)) {
             $output .= "<img src=\"data:image/png;base64,$imageBase64\" width=\"16\" height=\"16\" /> ";
+        }
+        if (!empty($svg)) {
+            $svg = str_replace('<svg ', '<svg style=" padding-top: 3px; padding-bottom: 3px; padding-right: 0px;" ', $svg);
+            $output .= $svg;
         }
         if (!empty($title)) {
             $output .= $title;
