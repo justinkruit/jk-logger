@@ -5,7 +5,7 @@
  * Plugin URI:   https://github.com/justinkruit/jk-debug/
  * Description:  Debug for WordPress
  *
- * Version:      1.0.0
+ * Version:      1.0.2
  *
  * Author:       Justin Kruit
  * Author URI:   https://justinkruit.com
@@ -64,4 +64,5 @@ function jk_debug_plugins_loaded() {
   );
 
   $myUpdateChecker->setBranch('release');
+  // $myUpdateChecker->getVcsApi()->enableReleaseAssets();
 }
