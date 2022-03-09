@@ -65,10 +65,7 @@ function jkdebug_plugins_loaded() {
 
 // include_once 'acf-settings.php';
 
-
-
-
-
+use Monolog\Handler\FirePHPHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 
@@ -103,8 +100,9 @@ class Log {
 			mkdir($dir, 0777, true);
 		}
 
-		$logger = new Logger('RdLotteryManager');
+		$logger = new Logger('JKDebug');
 		$logger->pushHandler(new RotatingFileHandler($dir . '/main.log', 5));
+		$logger->pushHandler(new FirePHPHandler());
 		//$logger->pushHandler(new LogglyHandler('eeb5ba83-f0d6-4273-bb1d-523231583855/tag/monolog'));
 		self::$instance = $logger;
 	}
