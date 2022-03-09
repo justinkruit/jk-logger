@@ -134,7 +134,7 @@ class Log {
 	}
 
 	public static function alert($message, array $context = []){
-		self::getLogger()->addAlert($message, $context);
+		self::getLogger()->alert($message, $context);
 	}
 
 	public static function emergency($message, array $context = []){
