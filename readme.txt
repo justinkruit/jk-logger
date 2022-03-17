@@ -1,6 +1,6 @@
-=== JK Debug ===
+=== JK Logger ===
 Contributors: justinkruit
-Tags: php, debug, jk
+Tags: php, log, jk
 Requires at least: 4.6
 Tested up to: 5.8
 Stable tag: 1.0.0

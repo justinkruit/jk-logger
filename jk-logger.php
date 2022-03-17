@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Plugin Name:  JK Debug
- * Plugin URI:   https://github.com/justinkruit/jk-debug/
+ * Plugin Name:  JK Logger
+ * Plugin URI:   https://github.com/justinkruit/jk-logger/
  * Description:  Debug for WordPress
  *
  * Version:      1.0.0
@@ -16,16 +16,16 @@
 
 require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
-add_action('plugins_loaded', 'jkdebug_plugins_loaded');
+add_action('plugins_loaded', 'jklogger_plugins_loaded');
 
 
-function jkdebug_plugins_loaded() {
+function jklogger_plugins_loaded() {
   require plugin_dir_path(__FILE__) . 'plugin-update-checker/plugin-update-checker.php';
 
   $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-    'https://github.com/justinkruit/jk-debug/',
+    'https://github.com/justinkruit/jk-logger/',
     __FILE__,
-    'jk-debug'
+    'jk-logger'
   );
 
   $myUpdateChecker->setBranch('release');
@@ -33,35 +33,35 @@ function jkdebug_plugins_loaded() {
 }
 
 
-// function jkdebug_get_settings() {
+// function jklogger_get_settings() {
 //   $userSettings = array();
 //   $defaultSettings = [
 //     "enable" => true,
-//     "required_environment" => defined('JKDEBUG_REQUIRED_ENVIRONMENT') ? JKDEBUG_REQUIRED_ENVIRONMENT : 'development',
-//     "require_signed_in" => defined('JKDEBUG_REQUIRE_SIGN_IN') ? JKDEBUG_REQUIRE_SIGN_IN : false,
-//     "allowed_users" => defined('JKDEBUG_ALLOWED_USERS') ? JKDEBUG_ALLOWED_USERS : false,
-//     "debugger_mode" => defined('JKDEBUG_DEBUGGER_MODE') ? JKDEBUG_DEBUGGER_MODE : 'development',
-//     "override_wpdie" => defined('JKDEBUG_OVERRIDE_WPDIE') ? JKDEBUG_OVERRIDE_WPDIE : false,
+//     "required_environment" => defined('jklogger_REQUIRED_ENVIRONMENT') ? jklogger_REQUIRED_ENVIRONMENT : 'development',
+//     "require_signed_in" => defined('jklogger_REQUIRE_SIGN_IN') ? jklogger_REQUIRE_SIGN_IN : false,
+//     "allowed_users" => defined('jklogger_ALLOWED_USERS') ? jklogger_ALLOWED_USERS : false,
+//     "debugger_mode" => defined('jklogger_DEBUGGER_MODE') ? jklogger_DEBUGGER_MODE : 'development',
+//     "override_wpdie" => defined('jklogger_OVERRIDE_WPDIE') ? jklogger_OVERRIDE_WPDIE : false,
 //   ];
 
 //   if (class_exists('ACF')) {
-//     $userSettings = get_field('jkdebug', 'options');
+//     $userSettings = get_field('jklogger', 'options');
 //   }
 
 //   return wp_parse_args($userSettings, $defaultSettings);
 // }
 
-// function jkdebug_register_acf_options_pages() {
+// function jklogger_register_acf_options_pages() {
 //   if (function_exists('acf_add_options_page')) {
 //     acf_add_options_sub_page(array(
-//       'page_title'  => 'JK Debug',
-//       'menu_title'  => 'JK Debug',
-//       'menu_slug'   => 'jk-debug',
+//       'page_title'  => 'JK Logger',
+//       'menu_title'  => 'JK Logger',
+//       'menu_slug'   => 'jk-logger',
 //       'parent_slug' => 'options-general.php',
 //     ));
 //   }
 // }
-// add_action('acf/init', 'jkdebug_register_acf_options_pages');
+// add_action('acf/init', 'jklogger_register_acf_options_pages');
 
 // include_once 'acf-settings.php';
 
@@ -100,7 +100,7 @@ class Log {
 			mkdir($dir, 0777, true);
 		}
 
-		$logger = new Logger('JKDebug');
+		$logger = new Logger('jklogger');
 		$logger->pushHandler(new RotatingFileHandler($dir . '/main.log', 5));
 		$logger->pushHandler(new FirePHPHandler());
 		//$logger->pushHandler(new LogglyHandler('eeb5ba83-f0d6-4273-bb1d-523231583855/tag/monolog'));
